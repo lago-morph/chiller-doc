@@ -7,11 +7,11 @@ Future functionality might allow one to search for other users that have movies 
 The application is intentionally simplistic so the focus can be on the surrounding activities, rather than the application itself.  This is not intended to be a useful application in its current state.
 
 The end-user visible functions implemented are:
-user login - log into the system with a username that has been previously registered.  No password is required.
-new user - Register a new user.  As long as the user name is unique, the user account is created and the user is logged in.
-logout - Log out of user account.
-list movies - show the list of movies associated with the currently logged in user
-add movie - add a new movie to the list of movies for the currently logged in user
+- user login - log into the system with a username that has been previously registered.  No password is required.
+- new user - Register a new user.  As long as the user name is unique, the user account is created and the user is logged in.
+- logout - Log out of user account.
+- list movies - show the list of movies associated with the currently logged in user
+- add movie - add a new movie to the list of movies for the currently logged in user
 
 The application front and back ends are written in Python using Flask.
 
