@@ -51,7 +51,7 @@ Planned, but not currently designed are the capability to ingest logs into a cen
 ## Current status
 
 |Component|Status|
-|---|---|---|
+|---|---|
 |[Application](application.md)|:green_circle: Complete|
 |[API definition](api_definition.md)|:green_circle: Complete|
 |[Development platform](development_platform.md)|:green_circle: Complete|
