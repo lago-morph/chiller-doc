@@ -16,14 +16,14 @@ As detailed in the CI/CD overview section, we use access controls on the
 release (any branch named "release-*") and main branches to force all merges
 to go through pull requests.
 
-The Action that controls the CI process is [build_and_test.yml](https://github.com/lago-morph/chiller/.github/workflows/build_and_test.yml).
+The Action that controls the CI process is [build_and_test.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/build_and_test.yml).
 
 The steps for CI (and a little bit of CD, described in more detail in cdel.md) are:
-- Build the python packages for the frontend, backend api, and the sdk (api calling wrappers) in [build-packages.yml](https://github.com/lago-morph/chiller/.github/workflows/build-packages.yml)
-- Run unit tests on api ([unit-test-chiller-frontend.yml](https://github.com/lago-morph/chiller/.github/workflows/unit-test-chiller-frontend.yml)) and frontend ([unit-test-chiller-frontend.yml](https://github.com/lago-morph/chiller/.github/workflows/unit-test-chiller-frontend.yml))
-- Build images for backend api service ([build-chiller-api-image.yml](https://github.com/lago-morph/chiller/.github/workflows/build-chiller-api-image.yml)) and frontend ([build-chiller-frontend-image.yml](https://github.com/lago-morph/chiller/.github/workflows/build-chiller-frontend-image.yml)) and store them in ghcr.io
-- Run integration test on backend api ([integration-test-chiller.yml](https://github.com/lago-morph/chiller/.github/workflows/integration-test-chiller.yml))
-- Run end-to-end browser test ([browser-test-chiller.yml](https://github.com/lago-morph/chiller/.github/workflows/browser-test-chiller.yml)
+- Build the python packages for the frontend, backend api, and the sdk (api calling wrappers) in [build-packages.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/build-packages.yml)
+- Run unit tests on api ([unit-test-chiller-frontend.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/unit-test-chiller-frontend.yml)) and frontend ([unit-test-chiller-frontend.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/unit-test-chiller-frontend.yml))
+- Build images for backend api service ([build-chiller-api-image.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/build-chiller-api-image.yml)) and frontend ([build-chiller-frontend-image.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/build-chiller-frontend-image.yml)) and store them in ghcr.io
+- Run integration test on backend api ([integration-test-chiller.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/integration-test-chiller.yml))
+- Run end-to-end browser test ([browser-test-chiller.yml](https://github.com/lago-morph/chiller/blob/main/.github/workflows/browser-test-chiller.yml)
 - Some extra steps to keep track of the images being built to use later for CDel
 
 As much as possible the process is parallelized to speed up the process.
