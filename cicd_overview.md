@@ -16,7 +16,7 @@ Pull requests to main can only come from branches named release-*.
 ## CI/CD triggers
 - Creating a pull request into a release-a.b.c branch triggers the CI process.
 - Closing a pull request (merge) into a release-a.b.c branch triggers the CD(elivery) process.
-- Creating a pull request into a main triggers the install testing part of the CD(elivery) process.
+- Creating a pull request into a main triggers the install testing part of the CD(eployment) process.
 - Closing a pull request (merge) into main triggers deployment into production.  The production deployment is monitored and automatically rolled back if certain metrics are out of bounds.
 - Creating an issue with a specially crafted name will trigger creation of various types of test environments in a release-* branch.
 
@@ -29,21 +29,18 @@ The overall system consists of the following components:
 
 Automated tests are defined for each component.
 For the front and back end components this consists of unit tests, integration tests, and system tests (browser test).
-Tests for the front and back end are run during the CI process.
+- Tests for the front and back end are run during the CI process
+- For the Helm chart this consists of initial deployment, upgrade deployment, and load tests
 
-For the Helm chart this consists of initial deployment, upgrade deployment, and load tests.
-These tests can be triggered by a developer on code already merged into the release branch, and are automatically run when a pull request is created to merge code from a release branch into main.
-For initial deployments the application is installed into a newly-created namespace and post-install sanity checks are run.
-Upgrade deployments are like initial deployments, except, first the version of the application currently running in the production environment is installed in the newly-created namespace, and then an upgrade is run with the current release candidate in the release branch.
+Initial deployments install the application into a newly-created namespace in the test kubernetes cluster and post-install sanity checks are run
+Upgrade deployments are like initial deployments, except first the version of the application currently running in the production environment is installed in the newly-created namespace, and then an upgrade is run with the current release candidate in the release branch.
 Load tests follow the same process as an initial deployment, but also runs a load test against the installed application using Locust.
 
+Deployment tests are automatically run when a pull request is created to merge code from a release branch into main.  
+They can also be manually triggered by a developer on code already merged into the release branch.
+
 # Example
-We start by creating branch release-1.0.0 from main.  
-We update the readme and some other files, and commit it as a starting point for development.
-We actually do this by creating a feature release, a pull request, and approve the pull request.
-That will trigger the CI and CD(eployment) process which builds containers.
-These containers will be available if we want to trigger deployment or system test environments in our release branch.  
-Those on-demand system test and deployment test features will only be available after the first pull request is approved into the release branch.
+We start by creating branch release-1.0.0 from main.
 
 ## Development commences
 Two different developers are working on features for this release.  Then branch off the release branch, and start making changes
@@ -67,17 +64,18 @@ gitGraph
    commit id: "[3] bf42"
    commit id: "[4] 7128"
 ```
+Note, `commit [1] f4bd` is in this diagram only to make the diagramming tool do what I want.
 
 ## Feature merged into release branch
-One of the developers finishes their feature, and issues a pull request into the release branch.  
-This triggers the CI process through integration testing and package/container creation.  
+One of the developers finishes their feature, and issues a pull request into the release branch.
+This triggers the CI process through integration testing and package/container creation.
 If those checks are good, and the pull request is approved, it is merged into the release branch and the developer is free to delete the feature branch.
 The CD artifacts are then published with the tags assigned to this merge.
 
 When the pull request is created, it will will run the CI/CD(elivery) actions.
 The pull request cannot be approved until the CI/CD run is successful.
 At the end of a successful run the containers will be uploaded to ghcr.io, and tagged with an identifier we can use to retrieve them later (in the example below, `v1.0.0-RC-20240705-221145`).
-If code is changed in the pull request (e.g., fixing something requested during the discussion), the CI/CD run goes again.  
+If code is changed in the pull request (e.g., fixing something requested during the discussion), the CI/CD run goes again and will create a new identifier.
 If the pull request is approved, a git tag is created on the merge commit that corresponds to the containers that were built with the approved source code.
 
 ```mermaid
@@ -124,12 +122,12 @@ gitGraph
 
 
 ## On-demand deployment testing
-At any time, deployment tests can be triggered in a release branch by opening a GitHub issue with a specially crafted name.  
+At any time, deployment tests can be triggered in a release branch by opening a GitHub issue with a specially crafted name.
 This causes a deployment test to be run in a temporary namespace in the testing kubernetes cluster.
 Any of the three delopment tests (initial, upgrade, load) can be run.
 The Action that executes the deployment test will find the most recent github tag in this branch with the appropriate format (`v1.0.0-RC-*`) and use that to find the appropriate container images.
-If the tests are successful the application is removed from the test environment, the temporary namespace is deleted, logs are associated with the GitHub issue that triggered the test, and the issue is closed.  
-If one of the tests is not successful, logs associated with the test are attached to the GitHub issue that triggered the test, and the application and namespace are left intact so that the problem can be debugged.  
+If the tests are successful the application is removed from the test environment, the temporary namespace is deleted, logs are associated with the GitHub issue that triggered the test, and the issue is closed.
+If one of the tests is not successful, logs associated with the test are attached to the GitHub issue that triggered the test, and the application and namespace are left intact so that the problem can be debugged.
 When the GitHub issue associated with a failed test is resolved, an Action is triggered that removes the instance of the application and the temporary namespace from the test environment.
 
 ## Continued development
@@ -200,8 +198,8 @@ gitGraph
 
 ## Pull request into main
 A pull request is created into main using the tag for a release candidate.  This triggers all three deployment tests, initial, upgrade, and load.
-These tests must pass before the pull request can be approved.  
-As with the on-demand CI/CD(eployment) tests, the installed application and namespaces are deleted if the test is successful, and is retained (with a new issue created) when they fail.  
+These tests must pass before the pull request can be approved.
+As with the on-demand CI/CD(eployment) tests, the installed application and namespaces are deleted if the test is successful, and is retained (with a new issue created) when they fail.
 The application install and associated namespace for a failed deployment test are automatically deleted when the GitHub issue related to the failed deployment is closed.
 
 ## The release is finalized
