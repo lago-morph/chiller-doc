@@ -58,7 +58,7 @@ Planned, but not currently designed are the capability to ingest logs into a cen
 |[Developer testing](developer_testing.md)|:green_circle: Complete|
 |[CI/CD Overview](cicd_overview.md)|:green_circle: Complete|
 |[Continuous integration (CI)](ci.md)|:green_circle: Complete|
-|[Continuous delivery (CDel)](cdel.md)|:yellow_circle: In process|
+|[Continuous delivery (CDel)](cdel.md)|:green_circle: Complete|
 |[Continuous deployment (CDep)](cdep.md)|:orange_circle: Designed|
 |[IaC - environment setup](iac.md)|:yellow_circle: In process|
 |[Application install](install.md)|:yellow_circle: In process|
