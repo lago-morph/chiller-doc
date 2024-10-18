@@ -30,13 +30,12 @@ The overall system consists of the following components:
 Automated tests are defined for each component.
 For the front and back end components this consists of unit tests, integration tests, and system tests (browser test).
 - Tests for the front and back end are run during the CI process
-- For the Helm chart this consists of initial deployment, upgrade deployment, and load tests
+- Tests for the install process are initial deployment, upgrade deployment, and load tests
+  - Initial deployments install the application into a newly-created namespace in the test kubernetes cluster and post-install sanity checks are run
+  - Upgrade deployments are like initial deployments, except first the version of the application currently running in the production environment is installed in the newly-created namespace, and then an upgrade is run with the current release candidate in the release branch.
+  - Load tests follow the same process as an initial deployment, but also runs a load test against the installed application using Locust.
 
-Initial deployments install the application into a newly-created namespace in the test kubernetes cluster and post-install sanity checks are run
-Upgrade deployments are like initial deployments, except first the version of the application currently running in the production environment is installed in the newly-created namespace, and then an upgrade is run with the current release candidate in the release branch.
-Load tests follow the same process as an initial deployment, but also runs a load test against the installed application using Locust.
-
-Deployment tests are automatically run when a pull request is created to merge code from a release branch into main.  
+Deployment tests are automatically run when a pull request is created to merge code from a release branch into main.
 They can also be manually triggered by a developer on code already merged into the release branch.
 
 # Example
@@ -203,7 +202,7 @@ As with the on-demand CI/CD(eployment) tests, the installed application and name
 The application install and associated namespace for a failed deployment test are automatically deleted when the GitHub issue related to the failed deployment is closed.
 
 ## The release is finalized
-The pull request into main is approved, triggering automatic deployment into production.  
+The pull request into main is approved, triggering automatic deployment into production.
 If the automatic deployment fails, it is rolled back, an issue is created, and the merge is rolled back.  If automatic deployment succeeds, the merge is tagged as the release number and the release branch can then be deleted.
 
 ```mermaid
