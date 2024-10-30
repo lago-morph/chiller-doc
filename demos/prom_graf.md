@@ -32,48 +32,77 @@ kubectl wait \
 kubectl apply -f manifests/
 ```
 
-In two separate terminals, set up port forwarding
+In two separate terminals, set up port forwarding for Grafana and Prometheus
 ```
-kubectl port-forward -n monitoring --address=192.168.88.130 svc/grafana 3000
+cd ~/chiller/helm
+make port-graf
 ```
+This is a shortcut for `kubectl port-forward -n monitoring --address=192.168.88.130 svc/grafana 3000`.
 ```
-kubectl port-forward -n monitoring --address=192.168.88.130 svc/prometheus-k8s 9090
+cd ~/chiller/helm
+make port-prom
 ```
+This is a shortcut for `kubectl port-forward -n monitoring --address=192.168.88.130 svc/prometheus-k8s 9090`.
+
 Note that the default username/password for Grafana is admin/admin.
 
-## TTL images for frontend, api, and load testing
+## images for frontend, api, and load testing
+There are two image sources
+1. TTL images made using Make in the dev environment
+2. ghcr.io images built by the CI GitHub Actions when a pull request is created into a release branch
+
+To create the TTL images, do the following.
 ```
 cd ~/chiller
 make images-ttl
 ```
+TTL images only persist for 24 hours.
+
+ghcr.io images are built by the CI GitHub Actions whenever a pull request is created that targets a release branch.
 
 ## Install application with Helm
-This must be done after installing the Prometheus Operator, as the Helm chart
-includes CRDs for Prometheus.
+This should be done after installing the Prometheus Operator, as the Helm chart
+includes CRDs for Prometheus.  
+If done before, the CRDs will not be created when the application is installed.
+
+Do **ONE** of the following, depending on if you want to use the TTL images or the ghcr.io images from the CI GitHub Actions.  If using the ghcr.io images, ensure that you have currently checked out a release branch or main in the dev environment.
+
+TTL images
 ```
 cd ~/chiller/helm
-helm install chiller ./chiller --post-renderer ./kust.sh
+make ttl
+```
+**OR**
+
+### ghcr images
+```
+cd ~/chiller/helm
+make cicd
 ```
 ## Set up Grafana dashboard
 Log into Grafana with admin/admin.  
 Create a new dashboard, and copy and paste the JSON from [this URL](https://github.com/lago-morph/chiller/blob/release-0.1.1/monitoring/grafana/chiller_application).
 
 # Show application
-Set up port forwarding to access on host machine
+To set up port forwarding to access on host machine run this in a dedicated shell:
 ```
-kubectl port-forward --address=192.168.88.130 svc/chiller-frontend 8080:80
+cd ~/chiller/helm
+make port-app
 ```
-Note: having this and locust running at the same time works, but there will be intermittent errors.
+This is a shortcut for `kubectl port-forward --address=192.168.88.130 svc/chiller-frontend 8080:80`.
+Note: having this and locust running at the same time works, but there may be intermittent errors.
 
 # Run load test to populate metrics
-Set up port forwarding for locust
+To set up port forwarding for locust run this in a dedicated shell:
 ```
-kubectl port-forward --address=127.0.0.1 svc/chiller-frontend 8222:80
+cd ~/chiller/helm
+make port-load
 ```
+This is a shortcut for `kubectl port-forward --address=127.0.0.1 svc/chiller-frontend 8222:80`
+
 Run locust load test
 ```
 cd ~/chiller/load/locust
 . ~/run/locust/.venv/bin/activate
 make load-1
 ```
-
