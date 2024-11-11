@@ -44,9 +44,6 @@ Grafana will monitor k8s for a ConfigMap with the appropriate label, and insert 
 The ConfigMap is installed as part of the application Helm chart.
 
 ## Status
-Complete for now.  Will debug race condition at some point, but does not interfere with current functionality (applying twice works).
-
-Still to do:
-- Debug race condition between terraform creating EKS cluster and using Helm to install monitoring stack.  Doing `terraform apply` twice works fine for now.
+Complete.
 
 See [terraform code](https://github.com/lago-morph/chiller-iac/tree/main/exp/aws).
