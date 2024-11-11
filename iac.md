@@ -40,14 +40,13 @@ Uses the AWS IAM module and resources from the AWS provider
 
 ### Monitoring stack
 Installs the community kube-prometheus stack, which includes the Prometheus Operator and Grafana.
-It then installs a custom dashboard for monitoring the chiller application.
+Grafana will monitor k8s for a ConfigMap with the appropriate label, and insert a custom dashboard based on ConfigMap.
+The ConfigMap is installed as part of the application Helm chart.
 
 ## Status
-**Almost** complete.
+Complete for now.  Will debug race condition at some point, but does not interfere with current functionality (applying twice works).
 
 Still to do:
-- test load balancer controller for outside access
-- Configure monitoring stack to dynamically load grafana dashboards from configmap
-- Encapsulate configmap representing chiller dashboard (to then be installed by chiller helm chart)
+- Debug race condition between terraform creating EKS cluster and using Helm to install monitoring stack.  Doing `terraform apply` twice works fine for now.
 
 See [terraform code](https://github.com/lago-morph/chiller-iac/tree/main/exp/aws).
