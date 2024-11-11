@@ -82,7 +82,6 @@ cd ~/chiller/helm
 make port-prom
 ```
 This is a shortcut for `kubectl port-forward -n monitoring --address=192.168.88.130 svc/prometheus-operated 9090`.
-```
 
 Then can open prometheus in a local browser at the following address:
 ```
