@@ -67,9 +67,9 @@ make port-graf
 This is a shortcut for `kubectl port-forward -n monitoring --address=192.168.88.130 svc/kube-prometheus-stack-grafana 3000:80`.
 
 In a browser window open:
-```
+
 http://192.168.88.130:3000
-```
+
 Username/password is `admin`/`admin`.
 
 Select the "Chiller application" dashboard.
@@ -84,6 +84,5 @@ make port-prom
 This is a shortcut for `kubectl port-forward -n monitoring --address=192.168.88.130 svc/prometheus-operated 9090`.
 
 Then can open prometheus in a local browser at the following address:
-```
+
 http://192.168.88.130:9090
-```
