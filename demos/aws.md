@@ -9,7 +9,7 @@ On local Linux machine:
 ```
 aws configure
 ```
-And type in key info from playground launch page.
+When prompted, paste in the Access Key Id and Secret Access Key from the playground launch page.  Make sure to use `us-east-1` as the region (or change the region used by Terraform in the `variables.tf` file).
 
 ## Create AWS EKS cluster
 
@@ -25,20 +25,24 @@ After this is done, get the credentials for kubectl
 cd ~/chiller-iac/exp/aws
 make kubectl
 ```
+This is a shortcut for `aws eks update-kubeconfig --region $(terraform output -raw region) --name $(terraform output -raw eks_cluster_name)`
 
 # Install chiller application
-Make sure you have updated the kubectl credentials in the previous step.
+**Make sure you have updated the kubectl credentials in the previous step.**
 
 ```
 cd ~/chiller/helm
 make cicd
 ```
+This uses Helm to install the chiller application using the most recent containers that went through the CI/CD process in the git branch currently checked out (right now `release-0.1.1`).
 
 Get the address of the chiller application load balancer:
 ```
 cd ~/chiller/helm
 make get-ingress
 ```
+This is a shortcut for `kubectl get ingress ingress-chiller -o json | jq .status.loadBalancer.ingress[0].hostname` followed by some sed edits to make it easier to copy/paste (`sed -e "s/\"//g" | sed -e "s/^/http:\/\//"`).
+
 Copy and paste this link into local browser.  It will **take about 5 minutes** before it is available.
 
 # Set up simulated user load
@@ -56,10 +60,11 @@ cd ~/chiller/load/locust
 . ~/run/locust/.venv/bin/activate
 make load-10
 ```
+This simulates 10 users constantly creating a new user, adding 4 movies, then logging out.
 
 # View Grafana dashboard
 
-Set up port forwarding for Grafana
+Set up port forwarding for Grafana in a dedicated shell:
 ```
 cd ~/chiller/helm
 make port-graf
