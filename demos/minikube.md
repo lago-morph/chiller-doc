@@ -1,5 +1,7 @@
 # Setup
 
+## This works but is somewhat outdated.  Use [AWS](aws.md) demo script instead.
+
 ## Minikube
 Start a 1.28 version of k8s with minikube with some specific command-line arguments.
 **This is destructive to the current minikube environment!**
